@@ -1,0 +1,32 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema">
+    <xs:element name = "persoane">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name = "persoana">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name = "nume" type = "xs:string"/>
+                            <xs:element name = "prenume" type = "xs:string"/>
+                            <xs:element name = "varsta" type = "xs:positiveInteger"/>
+                            <xs:element name = "adresa">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name = "strada" type = "xs:string"/>
+                                        <xs:element name = "numar" type = "xs:positiveInteger"/>
+                                        <xs:element name = "localitate" type = "xs:string"/>
+                                        <xs:element name = "judet" type = "xs:string"/>
+                                        <xs:element name = "tara" type = "xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name = "film_preferat" type = "xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name = "id" type = "xs:positiveInteger"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

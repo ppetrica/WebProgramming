@@ -11,5 +11,58 @@
             <judet>Iasi</judet>
             <tara>Romania</tara>
         </adresa>
+        <film_preferat>Interstellar</film_preferat>
+    </persoana>
+    <persoana id="2">
+        <nume>Dorcu</nume>
+        <prenume>Andrei</prenume>
+        <varsta>22</varsta>
+        <adresa>
+            <strada>Departe</strada>
+            <numar>23</numar>
+            <localitate>Piatra Neamt</localitate>
+            <judet>Neamt</judet>
+            <tara>Romania</tara>
+        </adresa>
+        <film_preferat>Fight Club</film_preferat>
+    </persoana>
+    <persoana id="3">
+        <nume>Moisii</nume>
+        <prenume>Marin</prenume>
+        <varsta>26</varsta>
+        <adresa>
+            <strada>Stradescu</strada>
+            <numar>1337</numar>
+            <localitate>Bucuresti</localitate>
+            <judet>Bucuresti</judet>
+            <tara>Romania</tara>
+        </adresa>
+        <film_preferat>The Pianist</film_preferat>
+    </persoana>
+    <persoana id="4">
+        <nume>White</nume>
+        <prenume>John</prenume>
+        <varsta>33</varsta>
+        <adresa>
+            <strada>Streetski</strada>
+            <numar>404</numar>
+            <localitate>Chicago</localitate>
+            <judet>Chicago</judet>
+            <tara>USA</tara>
+        </adresa>
+        <film_preferat>The Godfather</film_preferat>
+    </persoana>
+    <persoana id="5">
+        <nume>Black</nume>
+        <prenume>John</prenume>
+        <varsta>33</varsta>
+        <adresa>
+            <strada>Foreva</strada>
+            <numar>21</numar>
+            <localitate>New Jersey</localitate>
+            <judet>Judet</judet>
+            <tara>USA</tara>
+        </adresa>
+        <film_preferat>Pokemon</film_preferat>
     </persoana>
 </persoane>
