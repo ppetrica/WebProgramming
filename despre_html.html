@@ -7,6 +7,7 @@
         </title>
     </head>
     <body>
+        <!-- Exercitiu 1 -->
         <h1>Programare web</h1>
         <h2>Limbajul HTML</h2>
         <p><strong>HTML (HyperText Markup Language)</strong> este un
@@ -36,6 +37,7 @@
         sa se puna atributul <code>border="1"</code>.<br/>
         La validare se va da eroarea: <i>The border attribute on the table element is obsolete.</i>
 
+        <!-- Exercitiu 2 -->
         <p>Formularele se pot crea cu ajutorul tag-ului <code>form</code> care poate contine
              tag-urile: <code>input</code>, <code>textarea</code>, <code>label</code>,
               <code>select</code>, <code>option</code>, <code>button</code>.
@@ -43,34 +45,53 @@
             <a href="http://www.w3schools.com/html/html_forms.asp">HTML Forms and Inputs</a>
             de la adresa <a href="http://www.w3schools.com/html/html_forms.asp">
                 http://www.w3schools.com/html/html_forms.asp</a>.</p>
-            <form>
-                <p>Un exemplu de formular este urmatorul:<br/>
-                    <label for="nume">Nume: </label>
-                    <input type="text" id="nume" value="nume"/><br>
-                    
-                    <label for="prenume">Prenume: </label>
-                    <input type="text" id="prenume" value="prenume"/><br>
-                    
-                    <label for="parola">Parola: </label>
-                    <input type="password" id="parola" value="par"/><br>
-                    
-                    <label for="culoare_pref">Culoare preferata:</label>
-                    <select id="culoare_pref">
-                        <option>rosu</option>
-                        <option>galben</option>
-                        <option>albastru</option>
-                    </select>
-                    <br/>
-                    
-                    <label for="descriere">Descriere:</label>
-                    <textarea id="descriere" rows="3" cols="20"></textarea>
-                    <br/>
-
-                    <label for="agreement">Sunt de acord cu conditiile.</label>
-                    <input type="checkbox" id="agreement"/>
-                </p>
+        <form>
+            <p>Un exemplu de formular este urmatorul:<br/>
+                <label for="nume">Nume: </label>
+                <input type="text" id="nume" value="nume"/><br>
                 
-                <input type="submit" value="Inregistreaza"/>
-            </form>
+                <label for="prenume">Prenume: </label>
+                <input type="text" id="prenume" value="prenume"/><br>
+                
+                <label for="parola">Parola: </label>
+                <input type="password" id="parola" value="par"/><br>
+                
+                <label for="culoare_pref">Culoare preferata:</label>
+                <select id="culoare_pref">
+                    <option>rosu</option>
+                    <option>galben</option>
+                    <option>albastru</option>
+                </select>
+                <br/>
+                
+                <label for="descriere">Descriere:</label>
+                <textarea id="descriere" rows="3" cols="20"></textarea>
+                <br/>
+
+                <label for="agreement">Sunt de acord cu conditiile.</label>
+                <input type="checkbox" id="agreement"/>
+            </p>
+            
+            <input type="submit" value="Inregistreaza"/>
+        </form>
+
+        <!-- Exercitiu 3 -->
+        <p>Pentru a crea liste se pot folosi tag-urile:</p>
+        <ol type="i">
+            <li><code>ul</code> - lista neordonata</li>
+            <li><code>ol</code> - lista ordonata</li>
+            <li><code>li</code> - item din lista</li>
+            <li><code>dl</code> - lista cu descrieri</li>
+            <li><code>dt</code> - termen dintr-o lista cu descrieri</li>
+            <li><code>dd</code> - descrierea dintr-o lista cu descrieri</li>
+        </ol>
+        <p>
+            Pentru a insera un document HTML în altul se poate folosi tag-ul <code>&lt;iframe&gt;</code>.<br/>
+            Astfel, exemplul de mai jos inserează conținutul de la adresa
+            <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>.
+            <iframe width="700" src="https://html.spec.whatwg.org/multipage/"></iframe>
+        </p>
+        <hr/>
+        &copy;.2020.Programare web
     </body>
 </html>
