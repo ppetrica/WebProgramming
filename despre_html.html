@@ -36,5 +36,41 @@
         sa se puna atributul <code>border="1"</code>.<br/>
         La validare se va da eroarea: <i>The border attribute on the table element is obsolete.</i>
 
+        <p>Formularele se pot crea cu ajutorul tag-ului <code>form</code> care poate contine
+             tag-urile: <code>input</code>, <code>textarea</code>, <code>label</code>,
+              <code>select</code>, <code>option</code>, <code>button</code>.
+            Pentru mai multe detalii consultati cursul sau tutorialul 
+            <a href="http://www.w3schools.com/html/html_forms.asp">HTML Forms and Inputs</a>
+            de la adresa <a href="http://www.w3schools.com/html/html_forms.asp">
+                http://www.w3schools.com/html/html_forms.asp</a>.</p>
+            <form>
+                <p>Un exemplu de formular este urmatorul:<br/>
+                    <label for="nume">Nume: </label>
+                    <input type="text" id="nume" value="nume"/><br>
+                    
+                    <label for="prenume">Prenume: </label>
+                    <input type="text" id="prenume" value="prenume"/><br>
+                    
+                    <label for="parola">Parola: </label>
+                    <input type="password" id="parola" value="par"/><br>
+                    
+                    <label for="culoare_pref">Culoare preferata:</label>
+                    <select id="culoare_pref">
+                        <option>rosu</option>
+                        <option>galben</option>
+                        <option>albastru</option>
+                    </select>
+                    <br/>
+                    
+                    <label for="descriere">Descriere:</label>
+                    <textarea id="descriere" rows="3" cols="20"></textarea>
+                    <br/>
+
+                    <label for="agreement">Sunt de acord cu conditiile.</label>
+                    <input type="checkbox" id="agreement"/>
+                </p>
+                
+                <input type="submit" value="Inregistreaza"/>
+            </form>
     </body>
 </html>
