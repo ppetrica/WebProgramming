@@ -9,17 +9,85 @@
     <body>
         <header>
             <h1>
-                <img width="30" src="images/web_logo.png">&nbsp;Programare web</h1>
+                <img width="30" src="images/web_logo.png" alt="web_logo">&nbsp;
+                Programare web
+            </h1>
         </header>
         <hr/>
         <nav>
-            <a href="index.html">Acasa</a>&nbsp;&nbsp;&nbsp;
-            <a href="inregistreaza.html">Inregistreaza</a>&nbsp;&nbsp;&nbsp;
+            <a href="index.html">Acasă</a>&nbsp;&nbsp;&nbsp;
+            <a href="inregistreaza.html">Înregistreaza</a>&nbsp;&nbsp;&nbsp;
             <a href="video.html">Video</a>&nbsp;&nbsp;&nbsp;
             <a href="despre_html.html">Despre</a>
         </nav>
         <hr/>
         <main>
+            <fieldset>
+                <legend>Informații generale</legend>
+                
+                <label for="username">Nume utilizator:</label>
+                <input type="text" id="username" name="username"/>
+                <br/>
+                
+                <label for="password">Parola:</label>
+                <input type="password" id="password" name="password"/>
+                <br/>
+                
+                <label for="first_name">Nume:</label>
+                <input type="text" id="first_name" name="first_name"/>
+                <br/>
+                
+                <label for="last_name">Prenume:</label>
+                <input type="text" id="last_name" name="last_name"/>
+                <br/>
+            </fieldset>
+            <fieldset>
+                <legend>Informații personale</legend>
+
+                <label for="gender">Sexul:</label>
+                <select id="gender">
+                    <option value="male">Masculin</option>
+                    <option value="female">Feminin</option>
+                </select> 
+                <br/>
+
+                <label for="favourite_food_input">Mâncarea preferată</label>
+                <input id="favourite_food_input" list="favourite_food"/>
+                <datalist id="favourite_food">
+                    <option value="Pizza"></option>
+                    <option value="Shaorma"></option>
+                    <option value="Salată"></option>
+                    <option value="Ciorbă rădăuțeană"></option>
+                    <option value="Mămăligă cu brânză"></option>
+                </datalist>
+                <br/>
+
+                <label for="favourite_color">Culoarea preferată</label>
+                <input type="color" name="favourite_color" id="favourite_color"/>
+                <br/>
+
+                <label for="birth_date">Data nașterii</label>
+                <input type="date" id="birth_date" name="birth_date"/>
+                <br/>
+
+                <label for="birth_time">Ora nașterii</label>
+                <input type="time" id="birth_time" name="birth_time"/>
+                <br/>
+
+                <label for="age">Vârsta</label>
+                <input type="range" id="age" name="age" min="4" max="150"/>
+                <br/>
+
+                <label for="personal_website">Pagină personală</label>
+                <input type="url" id="personal_website" name="personal_website"/>
+                <br/>
+
+                <label for="description">Descriere</label>
+                <textarea id="description" name="description"></textarea>
+                <br/>
+
+                <input type="submit" value="Înregistrează" disabled>
+            </fieldset>
         </main>
         <hr/>
         <footer>&copy;.2020.Programare web</footer>
