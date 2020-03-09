@@ -1,0 +1,124 @@
+body {
+    margin: 0px;
+}
+
+header {
+    background-color: #a0bbcf;
+    text-align: center;
+    padding: 10px;
+    height: 50px;
+}
+
+header>h1 {
+    margin: 0px;
+    font-size: 2.5em;
+    font-family: Lato;
+}
+
+nav {
+    text-align: center;
+    background-color: #eff5fa;
+    padding: 10px;
+    height: 30px;
+}
+
+nav>a {
+    background-color: #eff5fa;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 50px;
+    padding-left: 50px;
+    font-size: 1.2em;
+    color: #121212;
+    text-decoration: none;
+    font-family: Lato;
+}
+
+nav>a:hover {
+    color: #5555aa;
+    background-color: white;
+}
+
+main {
+    padding: 10px;
+    min-height: calc(100% - 100px);
+}
+
+footer {
+    background-color: #a0bbcf;
+    position: relative;
+    bottom: 0px;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.1em;
+    font-family: "Arvo";
+    height: 20px;
+}
+
+p {
+    font-family: "Arvo";
+}
+
+p>a {
+    text-decoration: none;
+    color: #3333aa;
+}
+
+p.descriere {
+    margin-left: 10px;
+}
+
+fieldset {
+    background-color: #eff5fa;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #a0bbcf;
+}
+
+.entry {
+    padding: 5px;
+    margin: 5px;
+}
+
+legend {
+    font-size: 1.4em;
+    font-family: Lato;
+    background: #a0bbcf;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.entry>label {
+    width: 200px;
+    display: inline-block;
+}
+
+#selected_page {
+    text-decoration: underline;
+    color: #888888;
+}
+
+#register_button {
+    padding: 10px;
+    margin: 10px;
+    font-size: 1.0em;
+    border-radius: 5px;
+    background: #a0bbcf;
+    color: #ffffff;
+    border: 0px;
+}
+
+#register_button[disabled] {
+    background: #aaaaaa;
+}
+
+.entry>input {
+    border: 1px solid #a0bbcf;
+}
+
+input[type=text], input[type=password], input[type=url], input[list] {
+    padding: 5px;
+    border-radius: 5px;
+}

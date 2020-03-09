@@ -5,6 +5,9 @@
         <title>
             Înregistrează
         </title>
+        <link rel="stylesheet" type="text/css" href="css/stil.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     </head>
     <body>
         <header>
@@ -13,84 +16,93 @@
                 Programare web
             </h1>
         </header>
-        <hr/>
         <nav>
             <a href="index.html">Acasă</a>&nbsp;&nbsp;&nbsp;
-            <a href="inregistreaza.html">Înregistrează</a>&nbsp;&nbsp;&nbsp;
+            <a id="selected_page" href="inregistreaza.html">Înregistrează</a>&nbsp;&nbsp;&nbsp;
             <a href="video.html">Video</a>&nbsp;&nbsp;&nbsp;
             <a href="despre_html.html">Despre</a>&nbsp;&nbsp;&nbsp;
             <a href="desen.html">Desen</a>
         </nav>
-        <hr/>
         <main>
             <fieldset>
                 <legend>Informații generale</legend>
                 
-                <label for="username">Nume utilizator:</label>
-                <input type="text" id="username" name="username"/>
-                <br/>
+                <div class="entry">
+                    <label for="username">Nume utilizator:</label>
+                    <input type="text" id="username" name="username"/>
+                </div>
+
+                <div class="entry">
+                    <label for="password">Parola:</label>
+                    <input type="password" id="password" name="password"/>
+                </div>
                 
-                <label for="password">Parola:</label>
-                <input type="password" id="password" name="password"/>
-                <br/>
+                <div class="entry">
+                    <label for="first_name">Nume:</label>
+                    <input type="text" id="first_name" name="first_name"/>
+                </div>
                 
-                <label for="first_name">Nume:</label>
-                <input type="text" id="first_name" name="first_name"/>
-                <br/>
-                
-                <label for="last_name">Prenume:</label>
-                <input type="text" id="last_name" name="last_name"/>
-                <br/>
+                <div class="entry">
+                    <label for="last_name">Prenume:</label>
+                    <input type="text" id="last_name" name="last_name"/>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>Informații personale</legend>
 
-                <label for="gender">Sexul:</label>
-                <select id="gender">
-                    <option value="male">Masculin</option>
-                    <option value="female">Feminin</option>
-                </select> 
-                <br/>
+                <div class="entry">
+                    <label for="gender">Sexul:</label>
+                    <select id="gender">
+                        <option value="male">Masculin</option>
+                        <option value="female">Feminin</option>
+                    </select> 
+                </div>
 
-                <label for="favourite_food_input">Mâncarea preferată</label>
-                <input id="favourite_food_input" list="favourite_food"/>
-                <datalist id="favourite_food">
-                    <option value="Pizza"></option>
-                    <option value="Shaorma"></option>
-                    <option value="Salată"></option>
-                    <option value="Ciorbă rădăuțeană"></option>
-                    <option value="Mămăligă cu brânză"></option>
-                </datalist>
-                <br/>
+                <div class="entry">
+                    <label for="favourite_food_input">Mâncarea preferată:</label>
+                    <input id="favourite_food_input" list="favourite_food"/>
+                    <datalist id="favourite_food">
+                        <option value="Pizza"></option>
+                        <option value="Shaorma"></option>
+                        <option value="Salată"></option>
+                        <option value="Ciorbă rădăuțeană"></option>
+                        <option value="Mămăligă cu brânză"></option>
+                    </datalist>
+                </div>
 
-                <label for="favourite_color">Culoarea preferată</label>
-                <input type="color" name="favourite_color" id="favourite_color"/>
-                <br/>
+                <div class="entry">
+                    <label for="favourite_color">Culoarea preferată:</label>
+                    <input type="color" name="favourite_color" id="favourite_color"/>
+                </div>
 
-                <label for="birth_date">Data nașterii</label>
-                <input type="date" id="birth_date" name="birth_date"/>
-                <br/>
+                <div class="entry">
+                    <label for="birth_date">Data nașterii:</label>
+                    <input type="date" id="birth_date" name="birth_date"/>
+                </div>
 
-                <label for="birth_time">Ora nașterii</label>
-                <input type="time" id="birth_time" name="birth_time"/>
-                <br/>
+                <div class="entry">
+                    <label for="birth_time">Ora nașterii:</label>
+                    <input type="time" id="birth_time" name="birth_time"/>
+                </div>
 
-                <label for="age">Vârsta</label>
-                <input type="range" id="age" name="age" min="4" max="150"/>
-                <br/>
+                <div class="entry">
+                    <label for="age">Vârsta:</label>
+                    <input type="range" id="age" name="age" min="4" max="150"/>
+                </div>
 
-                <label for="personal_website">Pagină personală</label>
-                <input type="url" id="personal_website" name="personal_website"/>
-                <br/>
+                <div class="entry">
+                    <label for="personal_website">Pagină personală:</label>
+                    <input type="url" id="personal_website" name="personal_website"/>
+                </div>
 
-                <label for="description">Descriere</label>
-                <textarea id="description" name="description"></textarea>
-                <br/>
+                <div class="entry">
+                    <label for="description">Descriere:</label>
+                    <textarea id="description" name="description"></textarea>
+                </div>
 
-                <input type="submit" value="Înregistrează" disabled>
+                <input id="register_button" type="submit" value="Înregistrează" disabled>
             </fieldset>
         </main>
-        <hr/>
-        <footer>&copy;.2020.Programare web</footer>
+        <footer>&copy; 2020 Programare web</footer>
     </body>
 </html>
