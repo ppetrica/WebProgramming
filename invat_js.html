@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>
+            învăț JS
+        </title>
+        <link rel="stylesheet" type="text/css" href="css/stil.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet"/>
+        <script src="js/script.js"></script>
+    </head>
+    <body onload="showInfo()">
+        <header>
+            <h1>
+                <img width="30" src="images/web_logo.png" alt="web_logo">
+                &nbsp;Programare web
+            </h1>
+        </header>
+        <nav>
+            <a href="index.html">Acasă</a>
+            <a href="inregistreaza.html">Înregistrează</a>
+            <a href="video.html">Video</a>
+            <a href="despre_html.html">Despre</a>
+            <a href="desen.html">Desen</a>
+            <a id="selected_page" href="invat_js.html">Învăț JS</a>
+        </nav>
+        <main>
+            <div id="info">
+                <div info-entry>
+                    <span class="info-name">Data și timpul curent: </span><span id="info-date-time"></span>
+                </div>
+                <div info-entry>
+                    <span class="info-name">URL: </span><span id="info-url"></span>
+                </div>
+                <div info-location>
+                    <span class="info-name">Locație: </span><span id="info-geo-location"></span>
+                </div>
+            </div>
+        </main>
+        <footer>&copy; 2020 Programare web</footer>
+    </body>
+</html>

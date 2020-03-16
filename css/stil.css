@@ -122,3 +122,7 @@ input[type=text], input[type=password], input[type=url], input[list] {
     padding: 5px;
     border-radius: 5px;
 }
+
+.info-name {
+    font-weight: bold;
+}
