@@ -126,3 +126,37 @@ input[type=text], input[type=password], input[type=url], input[list] {
 .info-name {
     font-weight: bold;
 }
+
+.section-div {
+    margin-top: 20px;
+    background-color: #eff5fa;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.section-div>h2 {
+    margin-left: 10px;
+    font-size: 2.0em;
+    font-family: Lato;
+}
+
+.info-entry {
+    margin:10px;
+}
+
+#loto-numbers-input,#loto-numbers-div {
+    margin: 10px;
+}
+
+#loto-extract-button {
+    margin-top: 5px;
+    padding: 5px;
+    font-size: large;
+    background-color: #66aa63;
+    border-radius: 5px;
+}
+
+#loto-response-text {
+    font-size: 1.5em;
+    padding: 10px;
+}

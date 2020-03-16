@@ -26,16 +26,45 @@
             <a id="selected_page" href="invat_js.html">Învăț JS</a>
         </nav>
         <main>
-            <div id="info">
-                <div info-entry>
+            <div class="section-div">
+                <h2>Informații</h2>
+                <div class="info-entry">
                     <span class="info-name">Data și timpul curent: </span><span id="info-date-time"></span>
                 </div>
-                <div info-entry>
+                <div class="info-entry">
                     <span class="info-name">URL: </span><span id="info-url"></span>
                 </div>
-                <div info-location>
+                <div class="info-entry">
                     <span class="info-name">Locație: </span><span id="info-geo-location"></span>
                 </div>
+            </div>
+            <div class="section-div">
+                <h2>Internet Loto</h2>
+                <div id="loto-numbers-input">
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                    <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+                </div>
+            
+                <div id="loto-numbers-div">
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                    <input type="text" size="2" maxlength="2" disabled/>
+                </div>
+
+                <div id="loto-response-text"></div>
+
+                <button id="loto-extract-button" onclick="extractLotoNumbers()">Extragere</button>
             </div>
         </main>
         <footer>&copy; 2020 Programare web</footer>
