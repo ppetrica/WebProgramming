@@ -18,20 +18,23 @@ header>h1 {
 nav {
     text-align: center;
     background-color: #eff5fa;
-    padding: 10px;
     height: 30px;
+    padding-top: 7px;
 }
 
 nav>a {
+    transition: background-color 1s;
+    transition: color 1s;
     background-color: #eff5fa;
-    padding-top: 5px;
-    padding-bottom: 5px;
     padding-right: 50px;
     padding-left: 50px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     font-size: 1.2em;
     color: #121212;
     text-decoration: none;
     font-family: Lato;
+    vertical-align: middle;
 }
 
 nav>a:hover {
@@ -39,10 +42,24 @@ nav>a:hover {
     background-color: white;
 }
 
-main {
+#despre_main {
     padding: 10px;
     min-height: calc(100% - 100px);
+    animation-duration: 1s;
+    animation-name: slidein;
 }
+
+@keyframes slidein {
+    from {
+      margin-left: 50%;
+      width: 300%; 
+    }
+  
+    to {
+      margin-left: 0%;
+      width: 100%;
+    }
+  }
 
 footer {
     background-color: #a0bbcf;
@@ -154,9 +171,54 @@ input[type=text], input[type=password], input[type=url], input[list] {
     font-size: large;
     background-color: #66aa63;
     border-radius: 5px;
+    box-shadow: 1px 1px 2px 2px #44aa44;
+    transition: background-color 1s; 
+    transition: box-shadow 1s; 
+}
+
+#loto-extract-button:hover {
+    background-color: #66cc66;
+    box-shadow: 1px 1px 2px 2px #88ff88; 
 }
 
 #loto-response-text {
-    font-size: 1.5em;
+    font-size: 1.3em;
     padding: 10px;
+    width: 300px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.fade-in {
+    animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
+}
+
+#despre_tabel {
+    margin: 5px;
+    border-collapse: collapse;
+}
+
+#despre_tabel tr:first-child {
+    background-color: #B8B8B8;
+}
+#despre_tabel tr {
+    transform: skewY(-1deg);
+}
+
+#despre_tabel td {
+    border: 2px solid black;
+    padding: 5px;
+}
+
+#despre_tabel td::first-letter {
+    color: red;
 }
