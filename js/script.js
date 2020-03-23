@@ -1,5 +1,7 @@
 function showInfo() {
     document.getElementById("info-url").innerHTML = window.location.toString();
+    document.getElementById("info-os").innerHTML = navigator.platform;
+    document.getElementById("info-browser").innerHTML = navigator.appName;
 
     let date_displayer = () => {
         let date = new Date();
@@ -37,8 +39,7 @@ function extractLotoNumbers() {
     
     let guessed = 0;
     for (let i = 0; i < loto_number_elems.length; ++i) {
-        //let number = Math.round(Math.random() * 255);
-        let number = 0;
+        let number = Math.round(Math.random() * 255);
         
         let hex = number.toString(16).toUpperCase();
 
@@ -57,7 +58,7 @@ function extractLotoNumbers() {
     let message_div = document.getElementById("loto-response-text");
 
     let hue = (guessed / loto_number_elems.length * 120).toString(10);
-    message_div.style.backgroundColor = "hsl(" + hue + ", 100%, 50%)";
+    message_div.style.backgroundColor = "hsl(" + hue + ", 50%, 70%)";
     
     message_div.innerHTML = "Dumneavoastră ați ghicit " + guessed + ((guessed == 1) ? " număr." : " numere.");
 }
