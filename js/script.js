@@ -24,6 +24,36 @@ function showInfo() {
     }
 
     window.navigator.geolocation.getCurrentPosition(success_callback, error_callback, {});
+
+
+    let click = 0;
+
+    let last_position_x;
+    let last_position_y;
+
+    const canvas = document.getElementById("drawing-canvas");
+    const color = document.getElementById("drawing-color");
+
+    canvas.addEventListener("click", (click_event) => {
+        if (click == 0) {
+            last_position_x = click_event.clientX;
+            last_position_y = click_event.clientY;
+            
+            click = 1;
+        } else {
+            const rect = canvas.getBoundingClientRect()
+            
+            let context = canvas.getContext("2d");
+
+            context.fillStyle = color.value;
+            context.fillRect(last_position_x - rect.left,
+                             last_position_y - rect.top,
+                             click_event.clientX - last_position_x,
+                             click_event.clientY - last_position_y);
+            
+            click = 0;
+        }
+    });
 }
 
 
@@ -31,11 +61,8 @@ function extractLotoNumbers() {
     let loto_number_div = document.getElementById("loto-numbers-div");
     let loto_number_elems = loto_number_div.children;
     
-    console.log(loto_number_elems);
-    
     let loto_numbers_input = document.getElementById("loto-numbers-input");
     let user_loto_numbers_elems = loto_numbers_input.children;
-
     
     let guessed = 0;
     for (let i = 0; i < loto_number_elems.length; ++i) {

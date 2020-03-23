@@ -247,3 +247,7 @@ input[type=text], input[type=password], input[type=url], input[list] {
     min-height: 200px;
     margin: 20px;
 }
+
+#drawing-canvas {
+    margin: 20px;
+}
