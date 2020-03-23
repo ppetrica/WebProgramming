@@ -10,7 +10,7 @@
         <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet"/>
         <script src="js/script.js"></script>
     </head>
-    <body onload="showInfo()">
+    <body onload="initializePage()">
         <header>
             <h1>
                 <img width="30" src="images/web_logo.png" alt="web_logo">
@@ -82,6 +82,26 @@
 
                 <canvas id="drawing-canvas" width="400" height="400" style="border:1px solid #d3d3d3;">
                 </canvas>
+            </div>
+            <div class="section-div">
+                <table id="resizable-table">
+                </table>
+                <div class="info-entry">
+                    <div>
+                        <label for="#add-column-number" class="info-name">Coloana</label>
+                        <input type="number" id="add-column-number"/>
+                        <label for="#add-column-color" class="info-name">Culoarea</label>
+                        <input type="color" id="add-column-color" value="#aa2222"/>
+                        <button id="add-column-button">Adaugă</button>
+                    </div>
+                    <div>
+                        <label for="#add-row-number" class="info-name">Rândul</label>
+                        <input type="number" id="add-row-number"/>
+                        <label for="#add-row-color" class="info-name">Culoarea</label>
+                        <input type="color" id="add-row-color" value="#22aa22"/>
+                        <button id="add-row-button">Adaugă</button>
+                    </div>
+                </div>
             </div>
         </main>
         <footer>&copy; 2020 Programare web</footer>

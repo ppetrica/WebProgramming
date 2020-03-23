@@ -1,4 +1,4 @@
-function showInfo() {
+function initializePage() {
     document.getElementById("info-url").innerHTML = window.location.toString();
     document.getElementById("info-os").innerHTML = navigator.platform;
     document.getElementById("info-browser").innerHTML = navigator.appName;
@@ -54,6 +54,69 @@ function showInfo() {
             click = 0;
         }
     });
+
+    const table = document.getElementById("resizable-table");
+    
+    const column_number = document.getElementById("add-column-number");
+    const column_color = document.getElementById("add-column-color");
+
+    let column_button = document.getElementById("add-column-button");
+    column_button.onclick = () => {
+        const col = parseInt(column_number.value, 10);
+
+        if (table.children.length == 0) {
+            let new_row = document.createElement("tr");
+    
+            let new_cell = document.createElement("td");
+            new_cell.style.backgroundColor = column_color.value;
+            new_cell.innerHTML = "&nbsp;&nbsp;&nbsp;";
+
+            new_row.appendChild(new_cell);
+
+            table.appendChild(new_row);
+    
+            return;
+        }
+        
+        for (let i = 0; i < table.children.length; ++i) {
+            row = table.children[i];
+
+            let new_cell = document.createElement("td");
+            new_cell.style.backgroundColor = column_color.value;
+            new_cell.innerHTML = "&nbsp;&nbsp;&nbsp;";
+            
+            if (col < row.children.length) {
+                row.insertBefore(new_cell, table.children[col]);
+            } else {
+                row.appendChild(new_cell);
+            }
+        }
+    }
+
+    const row_number = document.getElementById("add-row-number");
+    const row_color = document.getElementById("add-row-color");
+
+    let row_button = document.getElementById("add-row-button");
+    row_button.onclick = () => {
+        const row = parseInt(row_number.value, 10);
+
+        const len = (table.children.length == 0) ? 1 : table.children[0].children.length;
+
+        let new_row = document.createElement("tr");
+        for (let i = 0; i < len; ++i) {
+            let new_cell = document.createElement("td");
+            new_cell.innerHTML = "&nbsp;&nbsp;&nbsp;";
+            new_cell.style.backgroundColor = row_color.value;
+
+            new_row.appendChild(new_cell);
+        }
+
+        if (row < table.children.length) {
+            table.insertBefore(new_row, table.children[row]);
+        } else {
+            table.appendChild(new_row);
+        }
+    };
 }
 
 
