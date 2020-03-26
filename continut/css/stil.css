@@ -163,6 +163,7 @@ input[type=text], input[type=password], input[type=url], input[list] {
     background-color: #eff5fa;
     padding: 10px;
     border-radius: 10px;
+    margin: 10px;
 }
 
 .section-div>h2 {
@@ -250,4 +251,10 @@ input[type=text], input[type=password], input[type=url], input[list] {
 
 #drawing-canvas {
     margin: 20px;
+}
+
+#section-container {
+    column-count: 2;
+    column-gap: 10px;
+    display: flex;
 }
