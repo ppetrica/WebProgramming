@@ -109,6 +109,7 @@ int process_request(SOCKET socket, const char *recvbuf) {
 
     parse_request_headers(recvbuf, &headers);
 
+    // What you need is what you get :D Or maybe not
     struct hash_map_bucket_node *elem = hash_map_get(&headers, "Accept");
     if (!elem) {
         printf("Could not find requested content type\n");
@@ -256,8 +257,6 @@ int main() {
         ret = 1;
         goto close_socket;
     }
-
-    #define DEFAULT_BUFLEN 1024
 
     SOCKET client_socket;
     while (1) {
