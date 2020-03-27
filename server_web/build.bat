@@ -1,1 +1,1 @@
-cl server_web.c /link Ws2_32.lib
+cl server_web.c hash_map.c /link Ws2_32.lib

@@ -1,6 +1,5 @@
 #include "hash_map.h"
 #include <string.h>
-#include <stdlib.h>
 
 
 int hash_map_init(struct hash_map *map, size_t n_buckets) {

@@ -1,5 +1,6 @@
 #include "hash_map.h"
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <stdio.h>
 #include <wchar.h>
 #include <locale.h>
@@ -45,7 +46,7 @@ int parse_request_headers(const char *buffer, struct hash_map *map) {
 }
 
 
-int process_request(SOCKET socket, const char *recvbuf, size_t size) {
+int process_request(SOCKET socket, const char *recvbuf) {
     const char *message_end = strstr(recvbuf, "\r\n\r\n");
     if (!message_end) {
         printf("Invalid client message.\n");
@@ -170,6 +171,37 @@ int process_request(SOCKET socket, const char *recvbuf, size_t size) {
 }
 
 
+DWORD WINAPI process_connection(LPVOID data) {
+    SOCKET socket = (SOCKET)data;
+
+    char recvbuf[1024];
+    
+    printf("Reading client message.\n");
+    int res = recv(socket, recvbuf, sizeof(recvbuf), 0);
+    if (res > 0) {
+        if (res == sizeof(recvbuf)) {
+            printf("Client message too big.\n");
+            
+            return -1;
+        }
+
+        recvbuf[res] = '\0';
+
+        printf("Parsing client message.\n");
+        
+        process_request(socket, recvbuf);
+    } else if (res == 0) {
+        printf("Connection closing...\n");
+    } else {
+        printf("recv failed: %d\n", WSAGetLastError());
+    }
+
+    closesocket(socket);
+
+    return 0;
+}
+
+
 int main() {
     WSADATA wsa_data;
     int res = WSAStartup(0x2020, &wsa_data);
@@ -227,41 +259,22 @@ int main() {
 
     #define DEFAULT_BUFLEN 1024
 
-    char recvbuf[DEFAULT_BUFLEN];
-    int recvbuflen = DEFAULT_BUFLEN;
-
-    SOCKET ClientSocket;
+    SOCKET client_socket;
     while (1) {
         printf("Waiting for incoming connection.\n");
-        ClientSocket = accept(ListenSocket, NULL, NULL);
-        if (ClientSocket == INVALID_SOCKET) {
+        client_socket = accept(ListenSocket, NULL, NULL);
+        if (client_socket == INVALID_SOCKET) {
             printf("accept failed: %d\n", WSAGetLastError());
-
-            goto close_client_socket;
+            continue;
         }
         
         printf("Accepted connection.\n");
-        
-        printf("Reading client message.\n");
-        res = recv(ClientSocket, recvbuf, DEFAULT_BUFLEN, 0);
-        if (res > 0) {
-            if (res == DEFAULT_BUFLEN) {
-                printf("Client message too big.\n");
-                
-                goto close_client_socket;
-            }
+        HANDLE thread = CreateThread(NULL, 0, process_connection, (LPVOID)client_socket, 0, NULL);
 
-            printf("Parsing client message.\n");
-            
-            process_request(ClientSocket, recvbuf, res);
-        } else if (res == 0) {
-            printf("Connection closing...\n");
-        } else {
-            printf("recv failed: %d\n", WSAGetLastError());
-        }
-
-    close_client_socket:
-        closesocket(ClientSocket);
+        if (!thread)
+            fprintf(stderr, "Failde to create new thread.\n");
+        else
+            CloseHandle(thread);
     }
 
 close_socket:
