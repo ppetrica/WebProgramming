@@ -1,153 +1,180 @@
+#include "hash_map.h"
 #include <WinSock2.h>
-#include <ws2tcpip.h>
 #include <stdio.h>
 #include <wchar.h>
 #include <locale.h>
 
 
-// TODO: Large files should be read and sent in chunks
-int read_file(const char *input_path, char **out_buffer) {
-    HANDLE file = CreateFile(input_path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (file == INVALID_HANDLE_VALUE) return -1;
+int parse_request_headers(const char *buffer, struct hash_map *map) {
+    static char key[256];
+    static char value[512];
 
-    DWORD n_bytes = GetFileSize(file, NULL);
+    const char *line_end = buffer;
+    line_end = strstr(line_end, "\r\n");
+    if (!line_end)
+        return 0;
 
-	DWORD read;
-	size_t total_read = 0;
-
-	char *buffer;
+    for (;;) {
+        const char *header_start = line_end + 2;
     
-    int ret;
+        const char *colon = strstr(header_start, ":");
+        if (!colon)
+            return 0;
 
-	buffer = (char *)malloc((n_bytes + 1) * sizeof(char));
-	if (!buffer) {
-		ret = -1;
+        while (colon > line_end && line_end != 0) {
+            header_start = line_end + 2;
 
-		goto discard_file;
-	}
+            line_end = strstr(header_start, "\r\n");
+        }
 
-    read = 1;
-	while (read) {
-        ReadFile(file, buffer + total_read, n_bytes - total_read, &read, NULL);
+        if (!line_end)
+            return 0;
 
-    	total_read += read;
+        size_t l = colon - header_start;
+        memcpy(key, header_start, l);
+        key[colon - header_start] = '\0';
+
+        while (isspace(*(++colon)));
+        
+        l = line_end - colon;
+        memcpy(value, colon, l);
+        value[line_end - colon] = '\0';
+
+        hash_map_add(map, key, value);
     }
-
-	if (total_read != n_bytes) {
-		ret = -1;
-
-		goto discard_buffer;
-	}
-
-	buffer[n_bytes] = '\0';
-
-	*out_buffer = buffer;
-
-	CloseHandle(file);
-
-	return n_bytes;
-
-discard_buffer:
-	free(buffer);
-
-discard_file:
-	CloseHandle(file);
-
-	return ret;
 }
 
 
-int process_request(SOCKET ClientSocket, const char *recvbuf, size_t size) {
-    for (int i = 0; i < size - 3; ++i) {
-        if (recvbuf[i] == '\r' && recvbuf[i + 1] == '\n' &&
-            recvbuf[i + 2] == '\r' && recvbuf[i + 3] == '\n') {
-            if (!strncmp(recvbuf, "GET", 3)) {
-                printf("Found GET request.\n");
-                int j;
-                for (j = 3; j < i; ++j) {
-                    if (!isspace(recvbuf[j]))
-                        break;
-                }
+int process_request(SOCKET socket, const char *recvbuf, size_t size) {
+    const char *message_end = strstr(recvbuf, "\r\n\r\n");
+    if (!message_end) {
+        printf("Invalid client message.\n");
 
-                int k;
-                for (k = j; k < i; ++k) {
-                    if (isspace(recvbuf[k]))
-                        break;
-                }
-
-                char path[256] = "../continut";
-
-                memcpy(path + 11, recvbuf + j, k - j);
-                path[11 + k - j] = '\0';
-
-                char *ind = strstr(recvbuf, "Accept:");
-                char *t_offset = ind + 7;
-                while (isspace(*t_offset)) {
-                    ++t_offset;
-                }
-
-                char *finish = t_offset;
-                while (!isspace(*finish) && *finish != ',') {
-                    finish++;
-                }
-
-                char content_type[256] = {0};
-                strncpy(content_type, t_offset, finish - t_offset);
-                printf("Requested content type: %s\n", content_type);
-
-                char *buffer = NULL;
-                printf("Reading path: %s\n", path);
-
-                int n_bytes = read_file(path, &buffer);
-                char *send_buffer = NULL;
-                size_t offset;
-                if (n_bytes < 0) {
-                    printf("Failed to find requested resource.\n");
-                    n_bytes = 0;
-
-                    send_buffer = malloc(200);
-                    offset = sprintf(send_buffer,
-                        "HTTP/1.1 404 Not Found\r\n"
-                        "Content-Length: 0\r\n"
-                        "Content-Type: text/plain\r\n"
-                        "Server: ppetrica\r\n\r\n");
-
-                    printf("Sending response.\n");
-                } else {
-                    printf("Found requested resource of size %d\n", n_bytes);
-                    send_buffer = malloc(n_bytes + 200);
-
-                    offset = sprintf(send_buffer,
-                        "HTTP/1.1 200 OK\r\n"
-                        "Content-Length: %d\r\n"
-                        "Content-Type: %s\r\n"
-                        "Server: ppetrica\r\n\r\n", n_bytes, content_type);
-                    memcpy(send_buffer + offset, buffer, n_bytes);
-                }
-
-                int iSendResult = send(ClientSocket, send_buffer, n_bytes + offset, 0);
-
-                if (iSendResult == SOCKET_ERROR) {
-                    printf("send failed: %d\n", WSAGetLastError());
-                    free(buffer);
-                    free(send_buffer);
-
-                    return -1;
-                }
-
-                free(buffer);
-                free(send_buffer);
-            }
-        }
+        return -1;
     }
+
+    size_t i = message_end - recvbuf;
+    if (strncmp(recvbuf, "GET", 3) != 0)
+        return -1;
+
+    printf("Found GET request.\n");
+    int j;
+    for (j = 3; j < i; ++j) {
+        if (!isspace(recvbuf[j]))
+            break;
+    }
+
+    int k;
+    for (k = j; k < i; ++k) {
+        if (isspace(recvbuf[k]))
+            break;
+    }
+
+    char path[256] = "../continut";
+
+    memcpy(path + 11, recvbuf + j, (size_t)k - j);
+    path[11 + k - j] = '\0';
+    
+
+    printf("Reading path: %s\n", path);
+    
+    char send_buffer[1024];
+
+    HANDLE file = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file == INVALID_HANDLE_VALUE) {
+        printf("Failed to find requested resource.\n");
+
+        int offset = sprintf(send_buffer,
+            "HTTP/1.1 404 Not Found\r\n"
+            "Content-Length: 0\r\n"
+            "Content-Type: text/plain\r\n"
+            "Server: ppetrica\r\n\r\n");
+
+        int res = send(socket, send_buffer, offset, 0);
+        
+        if (res == SOCKET_ERROR) {
+            printf("send failed: %d\n", WSAGetLastError());
+
+            return -1;
+        }
+
+        return 0;
+    }
+
+    char content_type[256];
+    
+    struct hash_map headers;
+    hash_map_init(&headers, 10);
+
+    parse_request_headers(recvbuf, &headers);
+
+    struct hash_map_bucket_node *elem = hash_map_get(&headers, "Accept");
+    if (!elem) {
+        printf("Could not find requested content type\n");
+
+        memcpy(content_type, "text/plain", 11);
+    } else {
+        char *pos = strchr(elem->value, ',');
+        if (pos) {
+            size_t l = pos - elem->value;
+            memcpy(content_type, elem->value, l);
+            content_type[l] = '\0';
+        } else {
+            strcpy(content_type, elem->value);
+        }
+
+        printf("Found content type: %s\n", content_type);
+    }
+
+    hash_map_free(&headers);
+
+    DWORD n_bytes = GetFileSize(file, NULL);
+
+    printf("Sending response.\n");
+    printf("Found requested resource of size %d\n", n_bytes);
+
+    int offset = sprintf(send_buffer,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Length: %ul\r\n"
+        "Content-Type: %s\r\n"
+        "Server: ppetrica\r\n\r\n", n_bytes, content_type);
+
+    int sent = send(socket, send_buffer, offset, 0);
+    
+    DWORD total_read = 0;
+    DWORD read;
+    do {
+        if (!ReadFile(file, send_buffer, min(n_bytes - total_read, sizeof(send_buffer)), &read, NULL)) {
+            printf("Failed reading from file: %d.\n", GetLastError());
+            CloseHandle(file);
+            
+            return -1;
+        }
+
+        total_read += read;
+
+        if (!read) break;
+        int sent = send(socket, send_buffer, read, 0);
+
+        if (sent == SOCKET_ERROR) {
+            printf("send failed: %d\n", WSAGetLastError());
+            CloseHandle(file);
+
+            return -1;
+        }
+    } while (read);
+    
+    CloseHandle(file);
+
+    return 0;
 }
 
 
 int main() {
     WSADATA wsa_data;
-    HRESULT iResult = WSAStartup(0x2020, &wsa_data);
-    if (iResult != 0) {
-        printf("WSAStartup failed %d\n", iResult);
+    int res = WSAStartup(0x2020, &wsa_data);
+    if (res != 0) {
+        printf("WSAStartup failed %d\n", res);
         return 1;
     }
 
@@ -161,9 +188,9 @@ int main() {
 
     int ret = 0;
 
-    iResult = getaddrinfo(NULL, "5678", &hints, &result);
-    if (iResult != 0) {
-        printf("getaddrinfo failed: %d\n", iResult);
+    res = getaddrinfo(NULL, "5678", &hints, &result);
+    if (res != 0) {
+        printf("getaddrinfo failed: %d\n", res);
 
         ret = 1;
         goto wsa_cleanup;
@@ -179,8 +206,8 @@ int main() {
         goto wsa_cleanup;
     }
 
-    iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-    if (iResult == SOCKET_ERROR) {
+    res = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+    if (res == SOCKET_ERROR) {
         printf("bind failed with error: %d\n", WSAGetLastError());
         freeaddrinfo(result);
         
@@ -201,39 +228,36 @@ int main() {
     #define DEFAULT_BUFLEN 1024
 
     char recvbuf[DEFAULT_BUFLEN];
-    int iSendResult;
     int recvbuflen = DEFAULT_BUFLEN;
 
     SOCKET ClientSocket;
-    // Receive until the peer shuts down the connection
     while (1) {
         printf("Waiting for incoming connection.\n");
         ClientSocket = accept(ListenSocket, NULL, NULL);
         if (ClientSocket == INVALID_SOCKET) {
             printf("accept failed: %d\n", WSAGetLastError());
 
-            ret = 1;
-            goto close_socket;
+            goto close_client_socket;
         }
         
         printf("Accepted connection.\n");
         
         printf("Reading client message.\n");
-        iResult = recv(ClientSocket, recvbuf, DEFAULT_BUFLEN, 0);
-        if (iResult > 0) {
-            printf("Parsing client message.\n");
-            if (process_request(ClientSocket, recvbuf, iResult) < 0) {
-                goto close_socket;
+        res = recv(ClientSocket, recvbuf, DEFAULT_BUFLEN, 0);
+        if (res > 0) {
+            if (res == DEFAULT_BUFLEN) {
+                printf("Client message too big.\n");
+                
+                goto close_client_socket;
             }
+
+            printf("Parsing client message.\n");
             
-        } else if (iResult == 0) {
+            process_request(ClientSocket, recvbuf, res);
+        } else if (res == 0) {
             printf("Connection closing...\n");
         } else {
             printf("recv failed: %d\n", WSAGetLastError());
-            closesocket(ClientSocket);
-
-            ret = 1;
-            goto close_socket;
         }
 
     close_client_socket:
