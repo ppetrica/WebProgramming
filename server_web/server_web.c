@@ -1,4 +1,5 @@
-#include "hash_map.h"
+#include "hash_map/hash_map.h"
+#include <zlib/zlib.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <stdio.h>
@@ -17,7 +18,7 @@ int parse_request_headers(const char *buffer, struct hash_map *map) {
 
     for (;;) {
         const char *header_start = line_end + 2;
-    
+
         const char *colon = strstr(header_start, ":");
         if (!colon)
             return 0;
@@ -44,6 +45,9 @@ int parse_request_headers(const char *buffer, struct hash_map *map) {
         hash_map_add(map, key, value);
     }
 }
+
+
+#define CHUNK 16384
 
 
 int process_request(SOCKET socket, const char *recvbuf) {
@@ -79,7 +83,8 @@ int process_request(SOCKET socket, const char *recvbuf) {
 
     printf("Reading path: %s\n", path);
     
-    char send_buffer[1024];
+    static char send_buffer[CHUNK];
+    static char compress_buffer[CHUNK];
 
     HANDLE file = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file == INVALID_HANDLE_VALUE) {
@@ -128,6 +133,38 @@ int process_request(SOCKET socket, const char *recvbuf) {
         printf("Found content type: %s\n", content_type);
     }
 
+    int compress = 0;
+
+    elem = hash_map_get(&headers, "Accept-Encoding");
+    if (elem) {
+        char *pos = strchr(elem->value, ',');
+        char *start = elem->value;
+        if (pos) {
+            do {
+                if (strncmp(start, "deflate", 7) == 0) {
+                    compress = 1;
+                    break;
+                }
+
+                start = pos + 1;
+                while (isspace(*start))
+                    ++start;
+
+                pos = strchr(start, ',');
+            } while (pos);
+
+            if (!pos && strncmp(start, "deflate", 7) == 0)
+                compress = 1;
+        } else {
+            if (strcmp(elem->value, "deflate")) {
+                compress = 1;
+            }
+        }
+    }
+
+    if (compress)
+        printf("Sending compressed format.\n");
+
     hash_map_free(&headers);
 
     DWORD n_bytes = GetFileSize(file, NULL);
@@ -135,18 +172,44 @@ int process_request(SOCKET socket, const char *recvbuf) {
     printf("Sending response.\n");
     printf("Found requested resource of size %d\n", n_bytes);
 
-    int offset = sprintf(send_buffer,
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Length: %ul\r\n"
-        "Content-Type: %s\r\n"
-        "Server: ppetrica\r\n\r\n", n_bytes, content_type);
+    struct z_stream_s stream;
+    stream.zalloc = NULL;
+    stream.zfree = NULL;
+    stream.opaque = NULL;
 
-    int sent = send(socket, send_buffer, offset, 0);
-    
+    int sent;
+    if (compress) {
+        if (deflateInit(&stream, Z_DEFAULT_COMPRESSION) != Z_OK) {
+            fprintf(stderr, "Failed to initialize deflate for gzip stream.\n");
+
+            return 1;
+        }
+        
+        int offset = sprintf(send_buffer,
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Length: %ul\r\n"
+            "Content-Type: %s\r\n"
+            "Content-Encoding: deflate\r\n"
+            "Server: ppetrica\r\n\r\n", n_bytes, content_type);
+
+        printf("Sending response header.\n");
+        sent = send(socket, send_buffer, offset, 0);
+    } else {
+        int offset = sprintf(send_buffer,
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Length: %ul\r\n"
+            "Content-Type: %s\r\n"
+            "Server: ppetrica\r\n\r\n", n_bytes, content_type);
+
+        printf("Sending response header.\n");
+        sent = send(socket, send_buffer, offset, 0);
+    }
+
     DWORD total_read = 0;
     DWORD read;
+    printf("Reading and sending response.\n");
     do {
-        if (!ReadFile(file, send_buffer, min(n_bytes - total_read, sizeof(send_buffer)), &read, NULL)) {
+        if (!ReadFile(file, send_buffer, min(n_bytes - total_read, CHUNK), &read, NULL)) {
             printf("Failed reading from file: %d.\n", GetLastError());
             CloseHandle(file);
             
@@ -155,16 +218,41 @@ int process_request(SOCKET socket, const char *recvbuf) {
 
         total_read += read;
 
-        if (!read) break;
-        int sent = send(socket, send_buffer, read, 0);
+        if (!compress) {
+            if (!read) break;
+        
+            int sent = send(socket, send_buffer, read, 0);
 
-        if (sent == SOCKET_ERROR) {
-            printf("send failed: %d\n", WSAGetLastError());
-            CloseHandle(file);
+            if (sent == SOCKET_ERROR) {
+                printf("send failed: %d\n", WSAGetLastError());
+                CloseHandle(file);
 
-            return -1;
+                return -1;
+            }
+        } else {
+            do {
+                stream.next_in = send_buffer;
+                stream.avail_in = read;
+                stream.next_out = compress_buffer;
+                stream.avail_out = CHUNK;
+
+                deflate(&stream, Z_FULL_FLUSH);
+
+                int have = CHUNK - stream.avail_out;
+                int sent = send(socket, compress_buffer, have, 0);
+                if (sent == SOCKET_ERROR) {
+                    printf("send failed: %d\n", WSAGetLastError());
+                    deflateEnd(&stream);
+                    CloseHandle(file);
+
+                    return -1;
+                }
+            } while (stream.avail_out == 0);
         }
-    } while (read);
+    } while (total_read != n_bytes);
+    
+    if (compress)
+        deflateEnd(&stream);
     
     CloseHandle(file);
 

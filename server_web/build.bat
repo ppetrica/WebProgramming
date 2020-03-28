@@ -1,1 +1,1 @@
-cl server_web.c hash_map.c /link Ws2_32.lib
+cl server_web.c /I. hash_map/hash_map.c /link Ws2_32.lib /libpath:zlib zlibwapi.lib
