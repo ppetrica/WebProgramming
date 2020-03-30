@@ -1,111 +1,79 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>
-            învăț JS
-        </title>
-        <link rel="stylesheet" type="text/css" href="css/stil.css"/>
-        <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet"/>
-        <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet"/>
-        <script src="js/script.js"></script>
-    </head>
-    <body onload="initializePage()">
-        <header>
-            <h1>
-                <img width="30" src="images/web_logo.png" alt="web_logo">
-                &nbsp;Programare web
-            </h1>
-        </header>
-        <nav>
-            <a href="index.html">Acasă</a>
-            <a href="inregistreaza.html">Înregistrează</a>
-            <a href="video.html">Video</a>
-            <a href="despre_html.html">Despre</a>
-            <a href="desen.html">Desen</a>
-            <a id="selected_page" href="invat_js.html">Învăț JS</a>
-        </nav>
-        <main>
-            <div id="section-container">
-                <div class="section-div">
-                    <h2>Informații</h2>
-                    <div class="info-entry">
-                        <span class="info-name">Data și timpul curent: </span><span id="info-date-time"></span>
-                    </div>
-                    <div class="info-entry">
-                        <span class="info-name">Browser: </span><span id="info-browser"></span>
-                    </div>
-                    <div class="info-entry">
-                        <span class="info-name">Sistem de operare: </span><span id="info-os"></span>
-                    </div>
-                    <div class="info-entry">
-                        <span class="info-name">URL: </span><span id="info-url"></span>
-                    </div>
-                    <div class="info-entry">
-                        <span class="info-name">Locație: </span><span id="info-geo-location"></span>
-                    </div>
-                </div>
-                <div class="section-div">
-                    <h2>Internet Loto</h2>
-                    <div id="loto-numbers-input">
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                        <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
-                    </div>
-                
-                    <div id="loto-numbers-div">
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                        <input type="text" size="2" maxlength="2" disabled/>
-                    </div>
+<div id="section-container">
+    <div class="section-div">
+        <h2>Informații</h2>
+        <div class="info-entry">
+            <span class="info-name">Data și timpul curent: </span><span id="info-date-time"></span>
+        </div>
+        <div class="info-entry">
+            <span class="info-name">Browser: </span><span id="info-browser"></span>
+        </div>
+        <div class="info-entry">
+            <span class="info-name">Sistem de operare: </span><span id="info-os"></span>
+        </div>
+        <div class="info-entry">
+            <span class="info-name">URL: </span><span id="info-url"></span>
+        </div>
+        <div class="info-entry">
+            <span class="info-name">Locație: </span><span id="info-geo-location"></span>
+        </div>
+    </div>
+    <div class="section-div">
+        <h2>Internet Loto</h2>
+        <div id="loto-numbers-input">
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+            <input type="text" pattern="[A-Z0-9]{2}" title="Loto number" size="2" maxlength="2"/>
+        </div>
+    
+        <div id="loto-numbers-div">
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+            <input type="text" size="2" maxlength="2" disabled/>
+        </div>
 
-                    <div id="loto-response-text"></div>
+        <div id="loto-response-text"></div>
 
-                    <button id="loto-extract-button" class="fade-in" onclick="extractLotoNumbers()">Extragere</button>
-                </div>
-                <div class="section-div">
-                    <h2>Dreptunghiuri for life</h2>
+        <button id="loto-extract-button" class="fade-in" onclick="extractLotoNumbers()">Extragere</button>
+    </div>
+    <div class="section-div">
+        <h2>Dreptunghiuri for life</h2>
 
-                    <div class="info-entry">
-                        <label for="#drawing-color" class="info-name">Culoarea de desenare: </span>
-                        <input type="color" id="drawing-color" value="#ff0000">
-                    </div>
+        <div class="info-entry">
+            <label for="#drawing-color" class="info-name">Culoarea de desenare: </span>
+            <input type="color" id="drawing-color" value="#ff0000">
+        </div>
 
-                    <canvas id="drawing-canvas" width="400" height="400" style="border:1px solid #d3d3d3;">
-                    </canvas>
-                </div>
-                <div class="section-div">
-                    <table id="resizable-table">
-                    </table>
-                    <div class="info-entry">
-                        <div>
-                            <label for="#add-column-number" class="info-name">Coloana</label>
-                            <input type="number" id="add-column-number"/>
-                            <label for="#add-column-color" class="info-name">Culoarea</label>
-                            <input type="color" id="add-column-color" value="#aa2222"/>
-                            <button id="add-column-button">Adaugă</button>
-                        </div>
-                        <div>
-                            <label for="#add-row-number" class="info-name">Rândul</label>
-                            <input type="number" id="add-row-number"/>
-                            <label for="#add-row-color" class="info-name">Culoarea</label>
-                            <input type="color" id="add-row-color" value="#22aa22"/>
-                            <button id="add-row-button">Adaugă</button>
-                        </div>
-                    </div>
-                </div>
+        <canvas id="drawing-canvas" width="400" height="400" style="border:1px solid #d3d3d3;">
+        </canvas>
+    </div>
+    <div class="section-div">
+        <table id="resizable-table">
+        </table>
+        <div class="info-entry">
+            <div>
+                <label for="#add-column-number" class="info-name">Coloana</label>
+                <input type="number" id="add-column-number"/>
+                <label for="#add-column-color" class="info-name">Culoarea</label>
+                <input type="color" id="add-column-color" value="#aa2222"/>
+                <button id="add-column-button">Adaugă</button>
             </div>
-        </main>
-        <footer>&copy; 2020 Programare web</footer>
-    </body>
-</html>
+            <div>
+                <label for="#add-row-number" class="info-name">Rândul</label>
+                <input type="number" id="add-row-number"/>
+                <label for="#add-row-color" class="info-name">Culoarea</label>
+                <input type="color" id="add-row-color" value="#22aa22"/>
+                <button id="add-row-button">Adaugă</button>
+            </div>
+        </div>
+    </div>
+</div>
