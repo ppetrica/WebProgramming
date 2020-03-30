@@ -152,3 +152,16 @@ function extractLotoNumbers() {
     
     message_div.innerHTML = "Dumneavoastră ați ghicit " + guessed + ((guessed == 1) ? " număr." : " numere.");
 }
+
+
+function schimbaContinut(resursa) {
+    let request = new XMLHttpRequest();
+
+    request.onreadystatechange = () => {
+        if (request.readyState == 4 && request.status == 200)
+            document.getElementById("continut").innerHTML = request.responseText;
+    }
+
+    request.open("GET", resursa + ".html", true)
+    request.send();
+}
