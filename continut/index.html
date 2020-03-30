@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="css/stil.css"/>
         <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+        <script src="js/script.js"></script>
     </head>
     <body>
         <header>
@@ -17,12 +18,12 @@
             </h1>
         </header>
         <nav>
-            <a id="selected_page" href="index.html">Acasă</a>
-            <a href="inregistreaza.html">Înregistrează</a>
-            <a href="video.html">Video</a>
-            <a href="despre_html.html">Despre</a>
-            <a href="desen.html">Desen</a>
-            <a href="invat_js.html">Învăț JS</a>
+            <a id="selected_page" onclick="schimbaContinut('acasa')">Acasă</a>
+            <a onclick="schimbaContinut('inregistreaza')">Înregistrează</a>
+            <a onclick="schimbaContinut('video')">Video</a>
+            <a onclick="schimbaContinut('despre_html')">Despre</a>
+            <a onclick="schimbaContinut('desen')">Desen</a>
+            <a onclick="schimbaContinut('invat_js')">Învăț JS</a>
         </nav>
         <main id="continut">
         </main>

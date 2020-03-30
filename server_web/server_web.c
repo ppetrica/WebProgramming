@@ -165,6 +165,8 @@ int process_request(SOCKET socket, const char *recvbuf) {
     if (compress)
         printf("Sending compressed format.\n");
 
+    compress = 0;
+
     hash_map_free(&headers);
 
     DWORD n_bytes = GetFileSize(file, NULL);
