@@ -154,12 +154,29 @@ function extractLotoNumbers() {
 }
 
 
-function schimbaContinut(resursa) {
+function schimbaContinut(resursa, jsFisier, jsFunctie) {
     let request = new XMLHttpRequest();
 
     request.onreadystatechange = () => {
-        if (request.readyState == 4 && request.status == 200)
+        if (request.readyState == 4 && request.status == 200) {
             document.getElementById("continut").innerHTML = request.responseText;
+            
+            if (jsFisier) {
+                var elementScript = document.createElement('script');
+                elementScript.onload = function () {
+                    console.log("hello");
+                    if (jsFunctie) {
+                        window[jsFunctie]();
+                    }
+                };
+                elementScript.src = jsFisier;
+                document.head.appendChild(elementScript);
+            } else {
+                if (jsFunctie) {
+                    window[jsFunctie]();
+                }
+            }
+        }
     }
 
     request.open("GET", resursa + ".html", true)

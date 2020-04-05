@@ -36,7 +36,7 @@ nav>a {
     vertical-align: middle;
 }
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 900px) {
     nav>a {
         display:block;
         font-size: 1.6em;
@@ -217,9 +217,14 @@ input[type=text], input[type=password], input[type=url], input[list] {
     }
 }
 
-#despre_tabel {
+table {
     margin: 5px;
     border-collapse: collapse;
+}
+
+table td {
+    border: 2px solid black;
+    padding: 5px;
 }
 
 #despre_tabel tr:first-child {
@@ -227,11 +232,6 @@ input[type=text], input[type=password], input[type=url], input[list] {
 }
 #despre_tabel tr {
     transform: skewY(-1deg);
-}
-
-#despre_tabel td {
-    border: 2px solid black;
-    padding: 5px;
 }
 
 #despre_tabel td::first-letter {
