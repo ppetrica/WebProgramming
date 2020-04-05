@@ -165,7 +165,7 @@ int process_request(SOCKET socket, const char *recvbuf) {
     if (compress)
         printf("Sending compressed format.\n");
 
-    compress = 0;
+    //compress = 0;
 
     hash_map_free(&headers);
 
@@ -181,7 +181,7 @@ int process_request(SOCKET socket, const char *recvbuf) {
 
     int sent;
     if (compress) {
-        if (deflateInit(&stream, Z_DEFAULT_COMPRESSION) != Z_OK) {
+        if (deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, MAX_WBITS + 16, 8, Z_DEFAULT_STRATEGY) != Z_OK) {
             fprintf(stderr, "Failed to initialize deflate for gzip stream.\n");
 
             return 1;
@@ -191,7 +191,7 @@ int process_request(SOCKET socket, const char *recvbuf) {
             "HTTP/1.1 200 OK\r\n"
             "Content-Length: %ul\r\n"
             "Content-Type: %s\r\n"
-            "Content-Encoding: deflate\r\n"
+            "Content-Encoding: gzip\r\n"
             "Server: ppetrica\r\n\r\n", n_bytes, content_type);
 
         printf("Sending response header.\n");
