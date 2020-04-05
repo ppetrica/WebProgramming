@@ -182,3 +182,29 @@ function schimbaContinut(resursa, jsFisier, jsFunctie) {
     request.open("GET", resursa + ".html", true)
     request.send();
 }
+
+function verifyCredentials() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const request = new XMLHttpRequest();
+
+    request.onreadystatechange = () => {
+        if (request.readyState == 4 && request.status == 200) {
+         
+            const jsonDoc = JSON.parse(request.responseText);
+            for (const user of jsonDoc) {
+                if (user.utilizator == username && user.parola == password) {
+                    document.getElementById("verified").innerHTML = "Corect";
+                    return;
+                }
+            }
+
+            document.getElementById("verified").innerHTML = "Invalid";
+        }
+    }
+
+    request.open("GET", "resurse/utilizatori.json")
+    request.setRequestHeader("Accept", "application/json");
+    request.send();
+}
