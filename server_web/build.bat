@@ -1,1 +1,1 @@
-cl server_web.c /I. hash_map/hash_map.c /link Ws2_32.lib /libpath:zlib zlibwapi.lib
+cl /MD /I. server_web.c requests.c hash_map/hash_map.c /link /libpath:jansson /libpath:zlib Ws2_32.lib zlibwapi.lib jansson.lib
