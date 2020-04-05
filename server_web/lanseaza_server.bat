@@ -1,1 +1,1 @@
-.\server_web.exe
+build && .\server_web.exe
