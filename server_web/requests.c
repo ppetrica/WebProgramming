@@ -26,8 +26,8 @@ int send_empty_response(SOCKET socket, int code, const char* message) {
 
 
 int parse_request_headers(const char *buffer, struct hash_map *map) {
-    static char key[256];
-    static char value[512];
+    char key[256];
+    char value[512];
 
     const char *line_end = buffer;
     line_end = strstr(line_end, "\r\n");
@@ -100,9 +100,9 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
     printf("Reading path: %s\n", path);
 
-    static char compress_buffer[CHUNK];
+    char compress_buffer[CHUNK];
 
-    static char send_buffer[CHUNK];
+    char send_buffer[CHUNK];
 
     HANDLE file = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file == INVALID_HANDLE_VALUE) {
@@ -113,10 +113,24 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
     char content_type[256];
 
+    printf("Initializing headers.\n");
     struct hash_map headers;
-    hash_map_init(&headers, 10);
+    if (hash_map_init(&headers, 10) < 0) {
+        CloseHandle(file);
 
-    parse_request_headers(recvbuf, &headers);
+        printf("Failed to initialize hash map.\n");
+
+        return send_empty_response(socket, 500, "Internal Server Error");
+    }
+
+    printf("Parsing headers.\n");
+    if (parse_request_headers(recvbuf, &headers) < 0) {
+        hash_map_free(&headers);
+
+        printf("Failed to parse request headers.\n");
+
+        return send_empty_response(socket, 400, "Bad Request");
+    }
 
     // What you need is what you get :D Or maybe not
     struct hash_map_bucket_node *elem = hash_map_get(&headers, "Accept");
@@ -173,7 +187,6 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
     DWORD n_bytes = GetFileSize(file, NULL);
 
-    printf("Sending response.\n");
     printf("Found requested resource of size %d\n", n_bytes);
 
     struct z_stream_s stream;
