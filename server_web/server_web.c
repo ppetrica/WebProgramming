@@ -98,6 +98,8 @@ int main() {
 #ifndef _WIN32
 	int on = 1;
 	setsockopt(ListenSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+
+	setsockopt(ListenSocket, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(on));
 #endif
 
     res = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
