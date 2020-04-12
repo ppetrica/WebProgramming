@@ -6,23 +6,25 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <unistd.h>
 #endif
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include <unistd.h>
 
 
 #ifdef _WIN32
-	#define thread_ret_t DWORD WINAPI
+	#define thread_ret_t DWORD
+    #define API WINAPI
 #else
 	#define thread_ret_t void *
 	#define closesocket close
 	#define INVALID_SOCKET -1
+    #define API
 #endif
 
 
-thread_ret_t process_connection(void *data) {
+thread_ret_t API process_connection(void *data) {
     socket_t socket = (socket_t)data;
 
     char recvbuf[1024];
