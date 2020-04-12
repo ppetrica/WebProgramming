@@ -7,7 +7,8 @@
 	#define socket_t SOCKET
 	#define LAST_SOCKET_ERROR() WSAGetLastError()
 #else
-	#define socket_t int
+	#include <stdint.h>
+	#define socket_t int64_t
 	#include <sys/socket.h>
 	#include <errno.h>
 	#define LAST_SOCKET_ERROR() errno
