@@ -41,7 +41,7 @@ function initializePage() {
             click = 1;
         } else {
             const rect = canvas.getBoundingClientRect()
-            
+
             let context = canvas.getContext("2d");
 
             context.fillStyle = color.value;

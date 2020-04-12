@@ -1,12 +1,3 @@
-class Produs {
-    constructor(id, nume, cantitate) {
-        this.id = id;
-        this.nume = nume;
-        this.cantitate = cantitate;
-    }
-}
-
-
 function toRow(object) {
     const row = document.createElement("tr");
     
@@ -27,6 +18,14 @@ function toRow(object) {
 
 
 function adaugaProdus() {
+    class Produs {
+        constructor(id, nume, cantitate) {
+            this.id = id;
+            this.nume = nume;
+            this.cantitate = cantitate;
+        }
+    }
+
     const name = document.getElementById("name").value;
     const quantity = document.getElementById("quantity").value;
 
@@ -51,6 +50,17 @@ function adaugaProdus() {
     localStorage.setItem("products", JSON.stringify(products));
     localStorage.setItem("lastId", lastId);
 
+    worker.postMessage(JSON.stringify(product));
+}
+
+
+function updateTable() {
+    let products = localStorage.getItem("products");
+    if (!products)
+        return;
+
+    products = JSON.parse(products);
+
     const table = document.getElementById("product-table");
     let body = table.getElementsByTagName("tbody")[0];
 
@@ -59,4 +69,15 @@ function adaugaProdus() {
     for (const product of products) {
         body.appendChild(toRow(product));
     }
+
+    worker = new Worker("js/worker.js");
+    worker.onmessage = (e) => {
+        product = JSON.parse(e.data);
+
+        const table = document.getElementById("product-table");
+        let body = table.getElementsByTagName("tbody")[0];
+
+        body.appendChild(toRow(product));
+    };
 }
+
