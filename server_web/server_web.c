@@ -1,12 +1,29 @@
 #include "requests.h"
+#ifdef _WIN32
 #include <WS2tcpip.h>
+#else
+#include <pthread.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#endif
 #include <stdio.h>
-#include <wchar.h>
-#include <locale.h>
+#include <stdint.h>
+#include <string.h>
+#include <unistd.h>
 
 
-DWORD WINAPI process_connection(LPVOID data) {
-    SOCKET socket = (SOCKET)data;
+#ifdef _WIN32
+	#define thread_ret_t DWORD WINAPI
+#else
+	#define thread_ret_t void *
+	#define closesocket close
+	#define INVALID_SOCKET -1
+#endif
+
+
+thread_ret_t process_connection(void *data) {
+    socket_t socket = (socket_t)data;
 
     char recvbuf[1024];
     
@@ -16,7 +33,7 @@ DWORD WINAPI process_connection(LPVOID data) {
         if (res == sizeof(recvbuf)) {
             printf("Client message too big.\n");
             
-            return -1;
+            return (thread_ret_t)-1;
         }
 
         recvbuf[res] = '\0';
@@ -27,7 +44,7 @@ DWORD WINAPI process_connection(LPVOID data) {
     } else if (res == 0) {
         printf("Connection closing...\n");
     } else {
-        printf("recv failed: %d\n", WSAGetLastError());
+        printf("recv failed: %d\n", LAST_SOCKET_ERROR());
     }
 
     closesocket(socket);
@@ -37,16 +54,20 @@ DWORD WINAPI process_connection(LPVOID data) {
 
 
 int main() {
+	int res;
+
+#ifdef _WIN32
     WSADATA wsa_data;
-    int res = WSAStartup(0x2020, &wsa_data);
+    res = WSAStartup(0x2020, &wsa_data);
     if (res != 0) {
         printf("WSAStartup failed %d\n", res);
         return 1;
     }
+#endif
 
     struct addrinfo *result = NULL, *ptr = NULL, hints;
 
-    ZeroMemory(&hints, sizeof (hints));
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;
@@ -54,7 +75,7 @@ int main() {
 
     int ret = 0;
 
-    res = getaddrinfo(NULL, "5678", &hints, &result);
+    res = getaddrinfo("0.0.0.0", "5678", &hints, &result);
     if (res != 0) {
         printf("getaddrinfo failed: %d\n", res);
 
@@ -62,10 +83,10 @@ int main() {
         goto wsa_cleanup;
     }
 
-    SOCKET ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    socket_t ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 
     if (ListenSocket == INVALID_SOCKET) {
-        printf("Error at socket(): %ld\n", WSAGetLastError());
+        printf("Error at socket(): %ld\n", LAST_SOCKET_ERROR());
         freeaddrinfo(result);
         
         ret = 1;
@@ -73,8 +94,8 @@ int main() {
     }
 
     res = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-    if (res == SOCKET_ERROR) {
-        printf("bind failed with error: %d\n", WSAGetLastError());
+    if (res != 0) {
+        printf("bind failed with error: %d\n", LAST_SOCKET_ERROR());
         freeaddrinfo(result);
         
         ret = 1;
@@ -83,37 +104,48 @@ int main() {
 
     freeaddrinfo(result);
 
-    printf("Listening on localhost:5678.\n");
-    if (listen(ListenSocket, SOMAXCONN ) == SOCKET_ERROR ) {
-        printf("Listen failed with error: %ld\n", WSAGetLastError() );
+    printf("Listening on 0.0.0.0:5678.\n");
+    if (listen(ListenSocket, SOMAXCONN ) != 0) {
+        printf("Listen failed with error: %ld\n", LAST_SOCKET_ERROR() );
     
         ret = 1;
         goto close_socket;
     }
 
-    SOCKET client_socket;
+    socket_t client_socket;
     while (1) {
         printf("Waiting for incoming connection.\n");
         client_socket = accept(ListenSocket, NULL, NULL);
         if (client_socket == INVALID_SOCKET) {
-            printf("accept failed: %d\n", WSAGetLastError());
+            printf("accept failed: %d\n", LAST_SOCKET_ERROR());
             continue;
         }
         
         printf("Accepted connection.\n");
-        HANDLE thread = CreateThread(NULL, 0, process_connection, (LPVOID)client_socket, 0, NULL);
+#ifdef _WIN32
+        HANDLE thread = CreateThread(NULL, 0, process_connection, (void *)client_socket, 0, NULL);
+#else
+		pthread_t thread;
+		pthread_create(&thread, NULL, process_connection, (void *)client_socket);
+#endif
 
         if (!thread)
             fprintf(stderr, "Failde to create new thread.\n");
         else
+#ifdef _WIN32
             CloseHandle(thread);
+#else
+			pthread_detach(thread);
+#endif
     }
 
 close_socket:
     closesocket(ListenSocket);
 
 wsa_cleanup:
+#ifdef _WIN32
     WSACleanup();
+#endif
 
     return ret;
 }

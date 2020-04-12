@@ -1,10 +1,22 @@
 #include "hash_map/hash_map.h"
 #include "requests.h"
-#include <zlib/zlib.h>
-#include <jansson/jansson.h>
+#include <zlib.h>
+#include <jansson.h>
+#include <stdint.h>
+#include <string.h>
+#include <ctype.h>
+#ifdef _WIN32
+	#define close_file CloseHandle
+#else
+	#include <unistd.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
+	#define close_file close
+	#define min(x, y) ((x) < (y)) ? (x) : (y)
+#endif
 
 
-int send_empty_response(SOCKET socket, int code, const char* message) {
+int send_empty_response(socket_t socket, int code, const char* message) {
     char send_buffer[256];
 
     int offset = sprintf(send_buffer,
@@ -15,8 +27,8 @@ int send_empty_response(SOCKET socket, int code, const char* message) {
 
     int res = send(socket, send_buffer, offset, 0);
 
-    if (res == SOCKET_ERROR) {
-        printf("send failed: %d\n", WSAGetLastError());
+    if (res == -1) {
+        printf("send failed: %d\n", LAST_SOCKET_ERROR());
 
         return -1;
     }
@@ -88,7 +100,7 @@ int parse_resource(const char *recvbuf, char *resource, int max_length) {
 #define CHUNK 16384
 
 
-int process_get_request(SOCKET socket, const char *recvbuf, const char *message_end) {
+int process_get_request(socket_t socket, const char *recvbuf, const char *message_end) {
     size_t i = message_end - recvbuf;
 
     char path[256] = "../continut";
@@ -104,8 +116,13 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
     char send_buffer[CHUNK];
 
-    HANDLE file = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+#ifdef _WIN32
+	HANDLE file = CreateFile(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file == INVALID_HANDLE_VALUE) {
+#else
+	int file = open(path, O_RDONLY);
+	if (file == -1) {
+#endif
         printf("Failed to find requested resource.\n");
 
         return send_empty_response(socket, 404, "Not Found");
@@ -116,7 +133,7 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
     printf("Initializing headers.\n");
     struct hash_map headers;
     if (hash_map_init(&headers, 10) < 0) {
-        CloseHandle(file);
+        close_file(file);
 
         printf("Failed to initialize hash map.\n");
 
@@ -185,7 +202,13 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
     hash_map_free(&headers);
 
+#ifdef _WIN32
     DWORD n_bytes = GetFileSize(file, NULL);
+#else
+	struct stat st;
+	fstat(file, &st);
+	int n_bytes = st.st_size;
+#endif
 
     printf("Found requested resource of size %d\n", n_bytes);
 
@@ -223,34 +246,38 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
         sent = send(socket, send_buffer, offset, 0);
     }
 
-    DWORD total_read = 0;
-    DWORD read;
+    uint32_t total_read = 0;
+    uint32_t bytes_read;
     printf("Reading and sending response.\n");
     do {
-        if (!ReadFile(file, send_buffer, min(n_bytes - total_read, CHUNK), &read, NULL)) {
-            printf("Failed reading from file: %d.\n", GetLastError());
-            CloseHandle(file);
+#ifdef _WIN32
+        if (!ReadFile(file, send_buffer, min(n_bytes - total_read, CHUNK), &bytes_read, NULL)) {
+#else
+        if ((bytes_read = read(file, send_buffer, min(n_bytes - total_read, CHUNK))) < 0) {
+#endif
+            printf("Failed reading from file.\n");
+            close_file(file);
 
             return -1;
         }
 
-        total_read += read;
+        total_read += bytes_read;
 
         if (!compress) {
-            if (!read) break;
+            if (!bytes_read) break;
 
-            int sent = send(socket, send_buffer, read, 0);
+            int sent = send(socket, send_buffer, bytes_read, 0);
 
-            if (sent == SOCKET_ERROR) {
-                printf("send failed: %d\n", WSAGetLastError());
-                CloseHandle(file);
+            if (sent == -1) {
+                printf("send failed: %d\n", LAST_SOCKET_ERROR());
+                close_file(file);
 
                 return -1;
             }
         } else {
             do {
                 stream.next_in = send_buffer;
-                stream.avail_in = read;
+                stream.avail_in = bytes_read;
                 stream.next_out = compress_buffer;
                 stream.avail_out = CHUNK;
 
@@ -258,10 +285,10 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
 
                 int have = CHUNK - stream.avail_out;
                 int sent = send(socket, compress_buffer, have, 0);
-                if (sent == SOCKET_ERROR) {
-                    printf("send failed: %d\n", WSAGetLastError());
+                if (sent == -1) {
+                    printf("send failed: %d\n", LAST_SOCKET_ERROR());
                     deflateEnd(&stream);
-                    CloseHandle(file);
+                    close_file(file);
 
                     return -1;
                 }
@@ -272,7 +299,7 @@ int process_get_request(SOCKET socket, const char *recvbuf, const char *message_
     if (compress)
         deflateEnd(&stream);
 
-    CloseHandle(file);
+    close_file(file);
 
     return 0;
 }
@@ -386,7 +413,7 @@ discard_user_json:
 #define USERS_FILE "../continut/resurse/utilizatori.json"
 
 
-int process_post_request(SOCKET socket, const char *recvbuf, const char *message_end) {
+int process_post_request(socket_t socket, const char *recvbuf, const char *message_end) {
     char resource[256];
 
     int parsed = parse_resource(recvbuf, resource, sizeof(resource) - 1);
@@ -497,7 +524,7 @@ discard_hash_map:
 }
 
 
-int process_request(SOCKET socket, const char *recvbuf) {
+int process_request(socket_t socket, const char *recvbuf) {
     const char *message_end = strstr(recvbuf, "\r\n\r\n");
     if (!message_end) {
         printf("Invalid client message.\n");
