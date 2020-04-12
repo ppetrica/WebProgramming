@@ -95,6 +95,11 @@ int main() {
         goto wsa_cleanup;
     }
 
+#ifndef _WIN32
+	int on = 1;
+	setsockopt(ListenSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+#endif
+
     res = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
     if (res != 0) {
         printf("bind failed with error: %d\n", LAST_SOCKET_ERROR());
