@@ -208,3 +208,9 @@ function verifyCredentials() {
     request.send();
 }
 
+function changeSectionSize(newSize) {
+	let sections = document.getElementsByClassName("section-div");
+	for (let section of sections) {
+		section.style.flex = "1 0 " + newSize;
+	}
+}

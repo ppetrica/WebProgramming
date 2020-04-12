@@ -164,6 +164,7 @@ input[type=text], input[type=password], input[type=url], input[list] {
     padding: 10px;
     border-radius: 10px;
     margin: 10px;
+	flex: 1 0 21%;
 }
 
 .section-div>h2 {
@@ -254,7 +255,18 @@ table td {
 }
 
 #section-container {
-    column-count: 2;
-    column-gap: 10px;
     display: flex;
+	flex-wrap: wrap;
+}
+
+aside {
+	text-align: center;
+}
+
+aside button {
+	padding: 10px;
+	margin: 20px;
+	margin-bottom: 10px;
+	font-size: 1.5em;
+	border-radius: 5px;
 }
