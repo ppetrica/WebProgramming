@@ -25,7 +25,6 @@ function initializePage() {
 
     window.navigator.geolocation.getCurrentPosition(success_callback, error_callback, {});
 
-
     let click = 0;
 
     let last_position_x;
@@ -208,3 +207,4 @@ function verifyCredentials() {
     request.setRequestHeader("Accept", "application/json");
     request.send();
 }
+
