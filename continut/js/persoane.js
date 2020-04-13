@@ -6,13 +6,14 @@ function createTable() {
             const xmlDoc = request.responseXML;
 
             let table = document.createElement("table");
+            table.id = "persons-table";
 
             let header = document.createElement("thead");
 
             let header_row = document.createElement("tr");
 
             const column_names = ["id", "nume", "prenume", "varsta", "adresa"];
-            for (const name in column_names) {
+            for (const name of column_names) {
                 let col = document.createElement("th");
                 col.innerHTML = name;
 

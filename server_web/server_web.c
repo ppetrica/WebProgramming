@@ -133,19 +133,19 @@ int main() {
         printf("Accepted connection.\n");
 #ifdef _WIN32
         HANDLE thread = CreateThread(NULL, 0, process_connection, (void *)client_socket, 0, NULL);
+        if (!thread) {
 #else
 		pthread_t thread;
-		pthread_create(&thread, NULL, process_connection, (void *)client_socket);
+		if (pthread_create(&thread, NULL, process_connection, (void *)client_socket) < 0) {
 #endif
-
-        if (!thread)
             fprintf(stderr, "Failde to create new thread.\n");
-        else
+        } else {
 #ifdef _WIN32
             CloseHandle(thread);
 #else
 			pthread_detach(thread);
 #endif
+        }
     }
 
 close_socket:
