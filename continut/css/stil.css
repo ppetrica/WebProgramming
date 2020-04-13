@@ -43,6 +43,21 @@ nav>a {
     }
 }
 
+@media screen and (min-width: 1500px) {
+    nav {
+        height: 25px;
+    }
+    header {
+        height: 50px;
+    }
+    html,body {
+        height: 100%;
+    }
+    main {
+        min-height: calc(90% - 75px);
+    }
+}
+
 @media print {
     body {
         margin: 0;
