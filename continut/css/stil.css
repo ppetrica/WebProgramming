@@ -36,7 +36,7 @@ nav>a {
     vertical-align: middle;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1500px) {
     nav>a {
         display:block;
         font-size: 1.6em;
@@ -58,7 +58,6 @@ nav>a:hover {
 
 #despre_main {
     padding: 10px;
-    min-height: calc(100% - 100px);
     animation-duration: 1s;
     animation-name: slidein;
 }
@@ -270,3 +269,4 @@ aside button {
 	font-size: 1.5em;
 	border-radius: 5px;
 }
+
