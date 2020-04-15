@@ -1,8 +1,9 @@
+#define _POSIX_C_SOURCE 200809L
 #include "requests.h"
 #ifdef _WIN32
 #include <WS2tcpip.h>
 #else
-#include <pthread.h>
+#include <threads.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -14,17 +15,15 @@
 
 
 #ifdef _WIN32
-	#define thread_ret_t DWORD
     #define API WINAPI
 #else
-	#define thread_ret_t void *
 	#define closesocket close
 	#define INVALID_SOCKET -1
     #define API
 #endif
 
 
-thread_ret_t API process_connection(void *data) {
+int API process_connection(void *data) {
     socket_t socket = (socket_t)data;
 
     char recvbuf[1024];
@@ -34,14 +33,14 @@ thread_ret_t API process_connection(void *data) {
     if (res > 0) {
         if (res == sizeof(recvbuf)) {
             printf("Client message too big.\n");
-            
-            return (thread_ret_t)-1;
+
+            return -1;
         }
 
         recvbuf[res] = '\0';
 
         printf("Parsing client message.\n");
-        
+
         process_request(socket, recvbuf);
     } else if (res == 0) {
         printf("Connection closing...\n");
@@ -90,7 +89,7 @@ int main() {
     if (ListenSocket == INVALID_SOCKET) {
         printf("Error at socket(): %ld\n", LAST_SOCKET_ERROR());
         freeaddrinfo(result);
-        
+
         ret = 1;
         goto wsa_cleanup;
     }
@@ -116,7 +115,7 @@ int main() {
     printf("Listening on 0.0.0.0:5678.\n");
     if (listen(ListenSocket, SOMAXCONN ) != 0) {
         printf("Listen failed with error: %ld\n", LAST_SOCKET_ERROR() );
-    
+
         ret = 1;
         goto close_socket;
     }
@@ -129,21 +128,21 @@ int main() {
             printf("accept failed: %d\n", LAST_SOCKET_ERROR());
             continue;
         }
-        
+
         printf("Accepted connection.\n");
 #ifdef _WIN32
         HANDLE thread = CreateThread(NULL, 0, process_connection, (void *)client_socket, 0, NULL);
         if (!thread) {
 #else
-		pthread_t thread;
-		if (pthread_create(&thread, NULL, process_connection, (void *)client_socket) < 0) {
+		thrd_t thread;
+		if (thrd_create(&thread, process_connection, (void *)client_socket) != thrd_success) {
 #endif
             fprintf(stderr, "Failde to create new thread.\n");
         } else {
 #ifdef _WIN32
             CloseHandle(thread);
 #else
-			pthread_detach(thread);
+			thrd_detach(thread);
 #endif
         }
     }
